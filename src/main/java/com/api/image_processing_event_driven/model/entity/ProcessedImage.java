@@ -1,11 +1,6 @@
 package com.api.image_processing_event_driven.model.entity;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.cglib.core.Local;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

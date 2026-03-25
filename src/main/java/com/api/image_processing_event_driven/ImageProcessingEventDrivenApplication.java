@@ -22,12 +22,10 @@ public class ImageProcessingEventDrivenApplication {
 
 		return (args) -> {
 
-			User newUser1 = new User("usuari1", "usuari1@gmail.com", "contrasenya123");
-			newUser1.addUserRole(Role.ROLE_USER);
+			User newUser1 = new User("usuari1", "usuari1@gmail.com", "contrasenya123", Role.ROLE_USER);
 			userRepository.save(newUser1);
 
-			User newUser2 = new User("usuari2", "usuari2@gmail.com", "contrasenya123");
-			newUser2.addUserRole(Role.ROLE_USER);
+			User newUser2 = new User("usuari2", "usuari2@gmail.com", "contrasenya123", Role.ROLE_USER);
 			userRepository.save(newUser2);
 
 			//String userId, String originalFileName, String gridfsFileId, Long fileSize, String contentType

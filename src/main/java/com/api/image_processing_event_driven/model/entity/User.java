@@ -9,8 +9,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+
 
 @Getter
 @Document(collection = "users")
@@ -31,7 +30,7 @@ public class User {
     private String password;
 
     @Setter
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -41,14 +40,11 @@ public class User {
 
     public User() {}
 
-    public User(String username, String password, String email) {
+    public User(String username, String password, String email, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;
-    }
-
-    public void addUserRole(Role role) {
-        this.roles.add(role);
+        this.role = role;
     }
 
     @Override
@@ -58,7 +54,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
-                ", roles=" + roles + '\'' +
+                ", role=" + role + '\'' +
                 ", createdAt=" + createdAt + '\'' +
                 ", updatedAt=" + updatedAt +
                 '}';
