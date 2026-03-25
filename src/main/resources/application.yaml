@@ -1,6 +1,6 @@
 spring:
   application:
     name: image-processing-event-driven
-    data:
-      mongodb:
-        uri: mongodb://admin:123@localhost:27017/?authSource=admin
+  data:
+    mongodb:
+      uri: mongodb://admin:123@localhost:27017/image_processing?authSource=admin
