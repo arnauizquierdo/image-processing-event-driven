@@ -14,7 +14,7 @@ import java.util.List;
 
 @Getter
 @Document(collection = "images")
-@CompoundIndex(name = "userid_originalFileName_unique", def = "{'userId': 1, 'originalFileName': 1}", unique = true)
+@CompoundIndex(name = "userId_originalFileName_unique", def = "{'userId': 1, 'originalFileName': 1}", unique = true)
 public class Image {
 
     @Id
