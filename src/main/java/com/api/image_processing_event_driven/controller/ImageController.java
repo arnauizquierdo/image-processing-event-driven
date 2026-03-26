@@ -1,13 +1,15 @@
 package com.api.image_processing_event_driven.controller;
 
+import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
 import com.api.image_processing_event_driven.model.entity.Image;
 import com.api.image_processing_event_driven.service.ImageService;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/images")
@@ -24,4 +26,14 @@ public class ImageController {
         Image image = imageService.uploadImage(userId, file);
         return ResponseEntity.ok(image);
     }
+
+    @GetMapping("/file/{gridfsId}")
+    public ResponseEntity<byte[]> getImage(@PathVariable String gridfsId) throws IOException {
+        ImageFileResponseDTO response = imageService.getImageFile(gridfsId);
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(response.contentType()))
+            .body(response.data());
+    }
+
+
 }
