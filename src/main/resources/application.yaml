@@ -5,3 +5,8 @@ spring:
     mongodb:
       uri: mongodb://admin:123@localhost:27017/image_processing?authSource=admin
       auto-index-creation: true
+  security:
+    jwt:
+        expiration: 3600000
+        secretKey: hasd81293hfsdkljfh2378fgh23ol7fghsshajgd512il334fdsfgsdf8273gf67823gfsdgfsdghjafsd121fd172d5f127idajsydf1j72fd152d
+        refresh_token_expiration: 86400000

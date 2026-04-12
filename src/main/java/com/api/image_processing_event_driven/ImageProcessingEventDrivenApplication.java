@@ -1,12 +1,14 @@
 package com.api.image_processing_event_driven;
 
 import com.api.image_processing_event_driven.model.entity.*;
+import com.api.image_processing_event_driven.service.JwtService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.api.image_processing_event_driven.repository.UserRepository;
 import com.api.image_processing_event_driven.repository.ImageRepository;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
 
@@ -22,6 +24,7 @@ public class ImageProcessingEventDrivenApplication {
 
 		return (args) -> {
 
+			/*
 			User newUser1 = new User("usuari1", "usuari1@gmail.com", "contrasenya123", Role.ROLE_USER);
 			userRepository.save(newUser1);
 
@@ -43,7 +46,7 @@ public class ImageProcessingEventDrivenApplication {
 			processedImage1.markAsCompleted("7823648126347812");
 			processedImage2.markAsProcessing();
 			imageRepository.save(image1);
-
+			*/
 		};
 	}
 
