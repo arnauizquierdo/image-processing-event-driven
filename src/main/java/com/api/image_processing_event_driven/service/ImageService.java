@@ -27,16 +27,15 @@ public class ImageService {
         this.imageMapper = imageMapper;
     }
 
-    public Image uploadImage(String userId, MultipartFile file) throws IOException {
-        String originalFileName = file.getOriginalFilename();
-        var gridFsId = gridFsTemplate.store(file.getInputStream(), originalFileName, file.getContentType());
-        Image image = new Image(userId, originalFileName, gridFsId.toString(), file.getSize(), file.getContentType());
+    public Image uploadImage(String username, MultipartFile file) throws IOException {
+        var gridFsId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType());
+        Image image = new Image(username, file.getOriginalFilename(), gridFsId.toString(), file.getSize(), file.getContentType());
         return imageRepository.save(image);
     }
 
     public ImageFileResponseDTO getImageFile(String gridfsId) throws IOException {
         GridFSFile gridFsFile = gridFsTemplate.findOne(
-                    Query.query(Criteria.where("_id").is(gridfsId))
+            Query.query(Criteria.where("_id").is(gridfsId))
         );
         if (gridFsFile == null) throw new RuntimeException("Image not found");
         GridFsResource resource = gridFsTemplate.getResource(gridFsFile);

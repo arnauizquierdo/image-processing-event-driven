@@ -32,10 +32,9 @@ public class User {
     @Setter
     private Role role;
 
-    @CreatedDate
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @Setter
     private LocalDateTime updatedAt;
 
     public User() {}
@@ -45,6 +44,8 @@ public class User {
         this.email = email;
         this.password = password;
         this.role = role;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @Override

@@ -14,13 +14,13 @@ import java.util.List;
 
 @Getter
 @Document(collection = "images")
-@CompoundIndex(name = "userId_originalFileName_unique", def = "{'userId': 1, 'originalFileName': 1}", unique = true)
+@CompoundIndex(name = "username_originalFileName_unique", def = "{'username': 1, 'originalFileName': 1}", unique = true)
 public class Image {
 
     @Id
     private String id;
 
-    private String userId;
+    private String username;
 
     private String originalFileName;
 
@@ -33,7 +33,7 @@ public class Image {
     @Setter
     private String contentType;
 
-    @CreatedDate
+    @Setter
     private LocalDateTime createdAt;
 
     @Setter
@@ -41,12 +41,13 @@ public class Image {
 
     public Image() {}
 
-    public Image(String userId, String originalFileName, String gridfsFileId, Long fileSize, String contentType) {
-        this.userId = userId;
+    public Image(String username, String originalFileName, String gridfsFileId, Long fileSize, String contentType) {
+        this.username = username;
         this.originalFileName = originalFileName;
         this.gridfsFileId = gridfsFileId;
         this.fileSize = fileSize;
         this.contentType = contentType;
+        this.createdAt = LocalDateTime.now();
     }
 
     public void addProcessedImage(ProcessedImage processedImage) {
@@ -57,7 +58,7 @@ public class Image {
     public String toString() {
         return "Image{" +
                 "id='" + id + '\'' +
-                ", userId='" + userId + '\'' +
+                ", username='" + username + '\'' +
                 ", originalFileName='" + originalFileName + '\'' +
                 ", gridfsFileId='" + gridfsFileId + '\'' +
                 ", fileSize=" + fileSize +
