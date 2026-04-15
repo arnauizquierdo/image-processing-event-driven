@@ -27,9 +27,9 @@ public class ImageController {
         return ResponseEntity.ok(image);
     }
 
-    @GetMapping("/file/{gridfsId}")
-    public ResponseEntity<byte[]> getImage(@PathVariable String gridfsId) throws IOException {
-        ImageFileResponseDTO response = imageService.getImageFile(gridfsId);
+    @GetMapping("/image/{id}/download")
+    public ResponseEntity<byte[]> downloadImage(Authentication authentication, @PathVariable String id) throws IOException {
+        ImageFileResponseDTO response = imageService.downloadImage(id, authentication.getName());
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(response.contentType()))
             .body(response.data());

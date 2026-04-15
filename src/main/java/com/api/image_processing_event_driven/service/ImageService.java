@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,11 +34,14 @@ public class ImageService {
         return imageRepository.save(image);
     }
 
-    public ImageFileResponseDTO getImageFile(String gridfsId) throws IOException {
+    public ImageFileResponseDTO downloadImage(String id, String username) throws IOException {
+        Image image = imageRepository.findById(id).orElseThrow(() -> new RuntimeException("Image not found"));
+        if (!image.getUsername().equals(username)) {
+            throw new RuntimeException("Not allowed to access this image");
+        }
         GridFSFile gridFsFile = gridFsTemplate.findOne(
-            Query.query(Criteria.where("_id").is(gridfsId))
+            Query.query(Criteria.where("_id").is(image.getGridfsFileId()))
         );
-        if (gridFsFile == null) throw new RuntimeException("Image not found");
         GridFsResource resource = gridFsTemplate.getResource(gridFsFile);
         return imageMapper.toImageFileResponse(resource.getInputStream().readAllBytes(), resource.getContentType());
     }
