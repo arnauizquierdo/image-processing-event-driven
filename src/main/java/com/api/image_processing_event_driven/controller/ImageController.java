@@ -1,8 +1,11 @@
 package com.api.image_processing_event_driven.controller;
 
 import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
+import com.api.image_processing_event_driven.model.dto.ProcessImageRequestDTO;
+import com.api.image_processing_event_driven.model.dto.ProcessImageResponseDTO;
 import com.api.image_processing_event_driven.model.entity.Image;
 import com.api.image_processing_event_driven.service.ImageService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,6 +36,13 @@ public class ImageController {
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(response.contentType()))
             .body(response.data());
+    }
+
+
+    @PostMapping("/process")
+    public ResponseEntity<ProcessImageResponseDTO> processImage(@RequestBody ProcessImageRequestDTO request, Authentication authentication) {
+        ProcessImageResponseDTO response = imageService.processImage(request.imageId(), request.watermarkText(), authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
 

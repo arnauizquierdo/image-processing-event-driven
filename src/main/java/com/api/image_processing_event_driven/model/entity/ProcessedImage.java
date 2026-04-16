@@ -12,7 +12,7 @@ public class ProcessedImage {
 
     private String gridfsFileId;
 
-    private String processedFileName;
+    private String waterMarkText;
 
     private ProcessingStatus processingStatus;
 
@@ -22,9 +22,9 @@ public class ProcessedImage {
 
     public ProcessedImage() {}
 
-    public ProcessedImage(String processedFileName) {
+    public ProcessedImage(String waterMarkText) {
         this.processedImageId = UUID.randomUUID().toString();
-        this.processedFileName = processedFileName;
+        this.waterMarkText = waterMarkText;
         this.processingStatus = ProcessingStatus.PENDING;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -51,7 +51,7 @@ public class ProcessedImage {
         return "ProcessedImage{" +
                 "processedImageId='" + processedImageId + '\'' +
                 ", gridfsFileId='" + gridfsFileId + '\'' +
-                ", processedFileName='" + processedFileName + '\'' +
+                ", waterMarkText='" + waterMarkText + '\'' +
                 ", processingStatus=" + processingStatus +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
