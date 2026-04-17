@@ -4,6 +4,7 @@ import com.api.image_processing_event_driven.mapper.ImageMapper;
 import com.api.image_processing_event_driven.mapper.ProcessImageMapper;
 import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageResponseDTO;
+import com.api.image_processing_event_driven.model.dto.UploadResponseDTO;
 import com.api.image_processing_event_driven.model.entity.Image;
 import com.api.image_processing_event_driven.model.entity.ProcessedImage;
 import com.api.image_processing_event_driven.model.entity.ProcessingStatus;
@@ -35,10 +36,11 @@ public class ImageService {
         this.processImageMapper = processImageMapper;
     }
 
-    public Image uploadImage(String username, MultipartFile file) throws IOException {
+    public UploadResponseDTO uploadImage(String username, MultipartFile file) throws IOException {
         var gridFsId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType());
         Image image = new Image(username, file.getOriginalFilename(), gridFsId.toString(), file.getSize(), file.getContentType());
-        return imageRepository.save(image);
+        imageRepository.save(image);
+        return imageMapper.imageToUploadResponseDTO(image);
     }
 
     public ImageFileResponseDTO downloadImage(String id, String username) throws IOException {

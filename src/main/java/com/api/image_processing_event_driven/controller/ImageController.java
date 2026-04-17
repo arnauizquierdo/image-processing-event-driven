@@ -3,6 +3,7 @@ package com.api.image_processing_event_driven.controller;
 import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageRequestDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageResponseDTO;
+import com.api.image_processing_event_driven.model.dto.UploadResponseDTO;
 import com.api.image_processing_event_driven.model.entity.Image;
 import com.api.image_processing_event_driven.service.ImageService;
 import org.springframework.http.HttpStatus;
@@ -25,9 +26,9 @@ public class ImageController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Image> uploadImage(Authentication authentication, @RequestParam("file") MultipartFile file) throws Exception {
-        Image image = imageService.uploadImage(authentication.getName(), file);
-        return ResponseEntity.ok(image);
+    public ResponseEntity<UploadResponseDTO> uploadImage(Authentication authentication, @RequestParam("file") MultipartFile file) throws Exception {
+        UploadResponseDTO response = imageService.uploadImage(authentication.getName(), file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/image/{id}/download")
