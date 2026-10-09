@@ -57,4 +57,9 @@ public class ProcessedImage {
                 ", updatedAt=" + updatedAt +
                 '}';
     }
+
+    public void markAsPending() {
+        this.processingStatus = ProcessingStatus.PENDING;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

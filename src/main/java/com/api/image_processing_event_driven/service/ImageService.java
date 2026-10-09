@@ -62,7 +62,7 @@ public class ImageService {
         }
         // creem el job
         ProcessedImage processedImage = new ProcessedImage(waterMarkText);
-        processedImage.markAsProcessing(); // o abans pending...
+        processedImage.markAsPending();
         image.addProcessedImage(processedImage);
         imageRepository.save(image);
         //
