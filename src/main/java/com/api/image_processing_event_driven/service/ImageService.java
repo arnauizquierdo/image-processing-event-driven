@@ -71,4 +71,18 @@ public class ImageService {
         return processImageMapper.processImageMapperToProcessImageResponseDTO(processedImage);
     }
 
+    public ProcessedImage getProcessingStatus(String username, String imageId, String processedImageId) {
+        Image image = imageRepository.findById(imageId)
+                .orElseThrow(() -> new RuntimeException("Image not found"));
+
+        if (!image.getUsername().equals(username)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        return image.getProcessedImages().stream()
+                .filter(p -> p.getProcessedImageId().equals(processedImageId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Processing request not found"));
+    }
+
 }

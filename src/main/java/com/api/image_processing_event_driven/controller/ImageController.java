@@ -5,6 +5,7 @@ import com.api.image_processing_event_driven.model.dto.ProcessImageRequestDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageResponseDTO;
 import com.api.image_processing_event_driven.model.dto.UploadResponseDTO;
 import com.api.image_processing_event_driven.model.entity.Image;
+import com.api.image_processing_event_driven.model.entity.ProcessedImage;
 import com.api.image_processing_event_driven.service.ImageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,6 +45,11 @@ public class ImageController {
     public ResponseEntity<ProcessImageResponseDTO> processImage(@RequestBody ProcessImageRequestDTO request, Authentication authentication) {
         ProcessImageResponseDTO response = imageService.processImage(request.imageId(), request.watermarkText(), authentication.getName());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{imageId}/processing/{processedImageId}")
+    public ProcessedImage getProcessingStatus(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) {
+        return imageService.getProcessingStatus(authentication.getName(), imageId, processedImageId);
     }
 
 
