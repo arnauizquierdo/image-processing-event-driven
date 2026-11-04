@@ -30,4 +30,6 @@ replay_pid*
 *.ipr
 
 HELP.md
-target/
+target
+
+.env
