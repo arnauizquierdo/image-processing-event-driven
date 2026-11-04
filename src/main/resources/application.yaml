@@ -10,3 +10,8 @@ spring:
         expiration: 3600000
         secretKey: hasd81293hfsdkljfh2378fgh23ol7fghsshajgd512il334fdsfgsdf8273gf67823gfsdgfsdghjafsd121fd172d5f127idajsydf1j72fd152d
         refresh_token_expiration: 86400000
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
