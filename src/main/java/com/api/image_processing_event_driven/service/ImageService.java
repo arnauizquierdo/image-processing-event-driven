@@ -1,5 +1,7 @@
 package com.api.image_processing_event_driven.service;
 
+import com.api.image_processing_event_driven.broker.ImageProcessingMessage;
+import com.api.image_processing_event_driven.broker.ImageProducer;
 import com.api.image_processing_event_driven.mapper.ImageMapper;
 import com.api.image_processing_event_driven.mapper.ProcessImageMapper;
 import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
@@ -28,17 +30,29 @@ public class ImageService {
     private final ImageRepository imageRepository;
     private final ImageMapper imageMapper;
     private final ProcessImageMapper processImageMapper;
+    private final ImageProducer imageProducer;
 
-    public ImageService(GridFsTemplate gridFsTemplate, ImageRepository imageRepository, ImageMapper imageMapper, ProcessImageMapper processImageMapper) {
+    public ImageService(GridFsTemplate gridFsTemplate, ImageRepository imageRepository, ImageMapper imageMapper, ProcessImageMapper processImageMapper, ImageProducer imageProducer) {
         this.gridFsTemplate = gridFsTemplate;
         this.imageRepository = imageRepository;
         this.imageMapper = imageMapper;
         this.processImageMapper = processImageMapper;
+        this.imageProducer = imageProducer;
     }
 
     public UploadResponseDTO uploadImage(String username, MultipartFile file) throws IOException {
-        var gridFsId = gridFsTemplate.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType());
-        Image image = new Image(username, file.getOriginalFilename(), gridFsId.toString(), file.getSize(), file.getContentType());
+        var gridFsId = gridFsTemplate.store(
+                file.getInputStream(),
+                file.getOriginalFilename(),
+                file.getContentType()
+        );
+        Image image = new Image(
+                username,
+                file.getOriginalFilename(),
+                gridFsId.toString(),
+                file.getSize(),
+                file.getContentType()
+        );
         imageRepository.save(image);
         return imageMapper.imageToUploadResponseDTO(image);
     }
@@ -57,19 +71,34 @@ public class ImageService {
 
     public ProcessImageResponseDTO processImage(String imageId, String waterMarkText, String username) {
         Image image = imageRepository.findById(imageId).orElseThrow(() -> new RuntimeException("Image not found"));
+
         if (!image.getUsername().equals(username)) {
             throw new RuntimeException("Not allowed to access this image");
         }
-        // creem el job
+
+        // create processing job
         ProcessedImage processedImage = new ProcessedImage(waterMarkText);
         processedImage.markAsPending();
+
+        // add processing request to Image
         image.addProcessedImage(processedImage);
+
+        // save processing request in MongoDB
         imageRepository.save(image);
-        //
-        //To-Do: publicar l'event al broker
-        //
+
+        // important: publish event to RabbitMQ
+        ImageProcessingMessage message = new ImageProcessingMessage(
+                image.getId(),
+                processedImage.getProcessedImageId()
+        );
+        imageProducer.sendProcessingRequest(message);
+
+        // return processing request response
         return processImageMapper.processImageMapperToProcessImageResponseDTO(processedImage);
     }
+
+
+
 
     public ProcessedImage getProcessingStatus(String username, String imageId, String processedImageId) {
         Image image = imageRepository.findById(imageId)
