@@ -4,7 +4,6 @@ import com.api.image_processing_event_driven.model.dto.ImageFileResponseDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageRequestDTO;
 import com.api.image_processing_event_driven.model.dto.ProcessImageResponseDTO;
 import com.api.image_processing_event_driven.model.dto.UploadResponseDTO;
-import com.api.image_processing_event_driven.model.entity.Image;
 import com.api.image_processing_event_driven.model.entity.ProcessedImage;
 import com.api.image_processing_event_driven.service.ImageService;
 import org.springframework.http.HttpStatus;
@@ -50,6 +49,12 @@ public class ImageController {
     @GetMapping("/{imageId}/processing/{processedImageId}")
     public ProcessedImage getProcessingStatus(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) {
         return imageService.getProcessingStatus(authentication.getName(), imageId, processedImageId);
+    }
+
+    @GetMapping("/{imageId}/processing/{processedImageId}/download")
+    public ResponseEntity<byte[]> downloadProcessedImage(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) throws IOException {
+        ImageFileResponseDTO response = imageService.downloadProcessedImage(imageId, processedImageId, authentication.getName());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(response.contentType())).body(response.data());
     }
 
 
