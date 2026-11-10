@@ -89,7 +89,7 @@ public class ImageServiceImpl implements ImageService {
                 processedImage.getProcessedImageId()
         );
         imageProducer.sendProcessingRequest(message);
-        return processImageMapper.processImageMapperToProcessImageResponseDTO(processedImage);
+        return processImageMapper.processImageToProcessImageResponseDTO(processedImage);
     }
 
     public ImageFileResponseDTO downloadProcessedImage(String imageId, String processedImageId, String username) throws IOException {

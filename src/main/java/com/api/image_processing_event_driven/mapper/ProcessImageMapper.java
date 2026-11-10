@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessImageMapper {
 
-    public ProcessImageResponseDTO processImageMapperToProcessImageResponseDTO(ProcessedImage processedImage) {
+    public ProcessImageResponseDTO processImageToProcessImageResponseDTO(ProcessedImage processedImage) {
         return new ProcessImageResponseDTO(
                 processedImage.getProcessedImageId(),
                 processedImage.getProcessingStatus(),
