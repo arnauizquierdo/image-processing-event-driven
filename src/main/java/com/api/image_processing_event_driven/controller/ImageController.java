@@ -31,7 +31,7 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/image/{id}/download")
+    @GetMapping("/{id}/download")
     public ResponseEntity<byte[]> downloadImage(Authentication authentication, @PathVariable String id) throws IOException {
         ImageFileResponseDTO response = imageService.downloadImage(id, authentication.getName());
         return ResponseEntity.ok()
@@ -46,12 +46,12 @@ public class ImageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("/{imageId}/processing/{processedImageId}")
+    @GetMapping("/{imageId}/{processedImageId}/status")
     public ProcessedImage getProcessingStatus(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) {
         return imageService.getProcessingStatus(authentication.getName(), imageId, processedImageId);
     }
 
-    @GetMapping("/{imageId}/processing/{processedImageId}/download")
+    @GetMapping("/{imageId}/{processedImageId}/download")
     public ResponseEntity<byte[]> downloadProcessedImage(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) throws IOException {
         ImageFileResponseDTO response = imageService.downloadProcessedImage(imageId, processedImageId, authentication.getName());
         return ResponseEntity.ok().contentType(MediaType.parseMediaType(response.contentType())).body(response.data());
