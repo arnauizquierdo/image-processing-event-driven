@@ -1,0 +1,29 @@
+# BUILD - Fase 1
+FROM maven:3.9-eclipse-temurin-25 AS build
+
+WORKDIR /app
+
+# copy root and POMs
+COPY pom.xml .
+COPY image-processing-core/pom.xml image-processing-core/pom.xml
+COPY image-processing-api/pom.xml image-processing-api/pom.xml
+COPY image-processing-worker/pom.xml image-processing-worker/pom.xml
+
+# copy source code
+COPY image-processing-core/src image-processing-core/src
+COPY image-processing-api/src image-processing-api/src
+COPY image-processing-worker/src image-processing-worker/src
+
+# compile API and its required dependencies (core)
+RUN mvn -B -pl image-processing-worker -am clean package -DskipTests
+
+
+# RUNTIME - Fase 2
+FROM eclipse-temurin:25-jre
+
+WORKDIR /app
+
+# copy the WORKER executable JAR from the build stage into the runtime image as app.jar
+COPY --from=build /app/image-processing-worker/target/image-processing-worker-*.jar app.jar
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

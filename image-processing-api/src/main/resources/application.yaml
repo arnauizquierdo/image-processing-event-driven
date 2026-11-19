@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: image-processing-api
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+      auto-index-creation: true
+  security:
+    jwt:
+      secretKey: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+      refresh_token_expiration: ${JWT_EXPIRATION_REFRESH}
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:rabbitmq}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASSWORD}
