@@ -1,0 +1,61 @@
+package com.imageprocessing.api.controller;
+
+import com.imageprocessing.api.model.dto.ImageFileResponseDTO;
+import com.imageprocessing.api.model.dto.ProcessImageRequestDTO;
+import com.imageprocessing.api.model.dto.ProcessImageResponseDTO;
+import com.imageprocessing.api.model.dto.UploadResponseDTO;
+import com.imageprocessing.core.entity.ProcessedImage;
+import com.imageprocessing.api.service.ImageService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
+@RestController
+@RequestMapping("/images")
+public class ImageController {
+
+    private final ImageService imageService;
+
+    public ImageController(ImageService imageService) {
+        this.imageService = imageService;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<UploadResponseDTO> uploadImage(Authentication authentication, @RequestParam("file") MultipartFile file) throws Exception {
+        UploadResponseDTO response = imageService.uploadImage(authentication.getName(), file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadImage(Authentication authentication, @PathVariable String id) throws IOException {
+        ImageFileResponseDTO response = imageService.downloadImage(id, authentication.getName());
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(response.contentType()))
+            .body(response.data());
+    }
+
+
+    @PostMapping("/process")
+    public ResponseEntity<ProcessImageResponseDTO> processImage(@RequestBody ProcessImageRequestDTO request, Authentication authentication) {
+        ProcessImageResponseDTO response = imageService.processImage(request.imageId(), request.watermarkText(), authentication.getName());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{imageId}/{processedImageId}/status")
+    public ProcessedImage getProcessingStatus(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) {
+        return imageService.getProcessingStatus(authentication.getName(), imageId, processedImageId);
+    }
+
+    @GetMapping("/{imageId}/{processedImageId}/download")
+    public ResponseEntity<byte[]> downloadProcessedImage(@PathVariable String imageId, @PathVariable String processedImageId, Authentication authentication) throws IOException {
+        ImageFileResponseDTO response = imageService.downloadProcessedImage(imageId, processedImageId, authentication.getName());
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(response.contentType())).body(response.data());
+    }
+
+
+}

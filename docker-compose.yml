@@ -40,9 +40,12 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
-    build: .
-    container_name: image-processing-app
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: image-processing-api:latest
+    container_name: image-processing-api
     restart: unless-stopped
     depends_on:
       mongo:
@@ -50,7 +53,7 @@ services:
       rabbitmq:
         condition: service_healthy
     environment:
-      SPRING_DATA_MONGODB_URI: mongodb://${DB_ROOT_USER}:${DB_ROOT_PASSWORD}@mongo:27017/${DB_NAME}?authSource=admin
+      SPRING_DATA_MONGODB_URI: "mongodb://${DB_ROOT_USER}:${DB_ROOT_PASSWORD}@mongo:27017/${DB_NAME}?authSource=admin"
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       RABBITMQ_USER: ${RABBITMQ_USER}
@@ -60,6 +63,26 @@ services:
       JWT_EXPIRATION_REFRESH: ${JWT_EXPIRATION_REFRESH}
     ports:
       - "8080:8080"
+    networks:
+      - image-pipeline-network
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    image: image-processing-worker:latest
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATA_MONGODB_URI: "mongodb://${DB_ROOT_USER}:${DB_ROOT_PASSWORD}@mongo:27017/${DB_NAME}?authSource=admin"
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
     networks:
       - image-pipeline-network
 
